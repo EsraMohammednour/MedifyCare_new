@@ -1,0 +1,30 @@
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+class Config(object):
+    SECRET_KEY = '736670cb10a600b695a55839ca3a5aa54a7d7356cdef815d2ad6e19a2031182b'
+    UPLOAD_FOLDER = 'webapp/static/images/'
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = 'medifycare24@gmail.com'
+    MAIL_PASSWORD = 'mlxcmevqstukhfoa'
+    GOOGLE_CLIENT_ID=os.environ.get('GOOGLE_CLIENT_ID')
+    GOOGLE_CLIENT_SECRET=os.environ.get('GOOGLE_CLIENT_SECRET')
+
+class ProdConfig(Config):
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # setup mysql
+    SQLALCHEMY_DATABASE_URI = 'mysql://medifycare:MedifyCare_2024@localhost/medifycare'
+    # MYSQL_HOST = 'localhost'
+    # MYSQL_USER = 'medifycare'
+    # MYSQL_PASSWORD = 'medifycare2023'
+    # MYSQL_DB = 'medifycare'
+
+class DevConfig(Config):
+    DEBUG = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB limit image upload
+    

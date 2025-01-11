@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
+{% block head %}
+    <!-- Override head if needed -->
+{% endblock %}
+
+{% block header %}
+    <!-- Leave this block empty to hide the header -->
+{% endblock %}
+
+{% block body %}
+<main class="relative grow flex">
+    <div class="w-full bg-light">
+        <div class="h-full flex flex-col justify-center before:min-h-[4rem] md:before:min-h-[5rem] before:flex-1 after:flex-1">
+            <div class="px-4 sm:px-6">
+                <div class="w-full max-w-sm mx-auto">
+                    <div class="py-16 md:py-20">
+                        <div class="mb-8">
+                            <h1 class="h2 font-uncut-sans text-black">Sign Up</h1>
+                        </div>
+                        <form method="POST" action="{{ url_for('auth.register') }}" enctype="multipart/form-data">
+                            {{ form.hidden_tag() }}
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm text-gray-600 font-medium mb-1" for="username">User Name <span class="text-red-500">*</span></label>
+                                    {{ form.username(class_="form-input py-2 w-full", id="username") }}
+                                    {% for error in form.username.errors %}
+                                        <div class="text-red-500">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-600 font-medium mb-1" for="email">Email <span class="text-red-500">*</span></label>
+                                    {{ form.email(class_="form-input py-2 w-full", id="email") }}
+                                    {% for error in form.email.errors %}
+                                        <div class="text-red-500">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-600 font-medium mb-1" for="password">Password <span class="text-red-500">*</span></label>
+                                    {{ form.password(class_="form-input py-2 w-full", id="password") }}
+                                    {% for error in form.password.errors %}
+                                        <div class="text-red-500">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-600 font-medium mb-1" for="confirm">Confirm Password <span class="text-red-500">*</span></label>
+                                    {{ form.confirm(class_="form-input py-2 w-full", id="confirm") }}
+                                    {% for error in form.confirm.errors %}
+                                        <div class="text-red-500">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-600 font-medium mb-1" for="role">Role <span class="text-red-500">*</span></label>
+                                    {{ form.role(class_="form-select py-2 w-full", id="role") }}
+                                    {% for error in form.role.errors %}
+                                        <div class="text-red-500">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="doctor-only" style="display: none;">
+                                    <div>
+                                        <label class="block text-sm text-gray-600 font-medium mb-1" for="specialty">Specialty</label>
+                                        {{ form.specialty(class_="form-input py-2 w-full", id="specialty") }}
+                                        {% for error in form.specialty.errors %}
+                                            <div class="text-red-500">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm text-gray-600 font-medium mb-1" for="bio">Bio</label>
+                                        {{ form.bio(class_="form-textarea py-2 w-full", id="bio", rows=4) }}
+                                        {% for error in form.bio.errors %}
+                                            <div class="text-red-500">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                    
+
+                                    <div>
+                                        <label class="block text-sm text-gray-600 font-medium mb-1" for="image">Upload Image</label>
+                                        {{ form.image(class_="form-input py-2 w-full", id="image") }}
+                                        {% for error in form.image.errors %}
+                                            <div class="text-red-500">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <div class="mt-6">
+                                    <button type="submit" class="btn-sm text-white bg-gradient-to-t from-primary to-primaryLight hover:to-primaryDark w-full shadow-lg group">
+                                        Sign Up <span class="tracking-normal text-blue-200 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">-&gt;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="text-sm text-gray-500 italic mt-6 mb-4">
+                            By filling out this form, I consent to the collection and use of my personal data.
+                        </div>
+
+                        <div class="pt-4 border-t border-primary">
+                            <div class="text-sm text-gray-400">
+                                Already have an account? <a href="{{ url_for('auth.login') }}" class="font-medium text-secondary hover:text-secondaryLight">Sign In</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const roleField = document.getElementById('role');
+        const doctorFields = document.querySelectorAll('.doctor-only');
+
+        function toggleDoctorFields() {
+            if (roleField.value === '1') { // Assuming '1' is the value for 'Doctor'
+                doctorFields.forEach(field => field.style.display = 'block');
+            } else {
+                doctorFields.forEach(field => field.style.display = 'none');
+            }
+        }
+
+        // Initialize the visibility on page load
+        toggleDoctorFields();
+
+        // Add event listener for role change
+        roleField.addEventListener('change', toggleDoctorFields);
+    });
+</script>
+{% endblock %}
+
+{% block footer %}
+    <!-- Leave this block empty to hide the footer -->
+{% endblock %}

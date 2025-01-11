@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% endblock %}
+
+{% block head %}
+    <!-- Override the head block if needed -->
+{% endblock %}
+
+{% block header %}
+    <!-- Leave this block empty to hide the header -->
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper">
+        <form method="POST" action="{{ url_for('.login') }}">
+            {{ form.hidden_tag() }}
+            <h1>Sign In to Your Account</h1>
+            <h5>😊 Let's get you signed in</h5>
+            <div class="input-box">
+                <input type="text" name="username" placeholder="Username" required>
+                <i class='bx bxs-user'></i>
+                {% if form.username.errors %}
+                    {% for e in form.username.errors %}
+                        <p class="help-block">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="input-box">
+                <input type="text" name="email" placeholder="Email" required>
+                <i class='bx bxs-envelope'></i>
+                {% if form.email.errors %}
+                    {% for e in form.email.errors %}
+                        <p class="help-block">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="input-box">
+                <input type="password" name="password" placeholder="Password" required id="password">
+                <i class='bx bxs-lock-alt' id="lockIcon" style="cursor: pointer;"></i>
+                <i class='bx bx-show' id="togglePassword" style="display: none; cursor: pointer;"></i>
+                {% if form.password.errors %}
+                    {% for e in form.password.errors %}
+                        <p class="help-block">{{ e }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="remember-forgot">
+                <label><input type="checkbox" name="remember_me"> Remember Me</label>
+                <a href="{{ url_for('auth.reset_password_request') }}">Forget password?</a>
+            </div>
+
+            <input class="btn" type="submit" value="Sign In">
+            <br>
+            <br>
+
+            <p>OR</p>
+
+            <a href="{{ url_for('google.login') }}" class="btn-google">
+                <i class="bx bxl-google google-logo"></i>
+            </a>
+
+            <div class="register-link">
+                <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/register.js') }}" defer></script>
+{% endblock %}
+
+{% block footer %}
+    <!-- Leave this block empty to hide the footer -->
+{% endblock %}

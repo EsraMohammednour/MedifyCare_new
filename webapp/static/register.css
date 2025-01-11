@@ -1,0 +1,89 @@
+/* Form Styles */
+form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Label Styles */
+label {
+    font-size: 0.875rem;
+    color: #4a4a4a;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Input Styles */
+input.form-input, select.form-select, textarea.form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background-color: #f9fafb;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input.form-input:focus, select.form-select:focus, textarea.form-textarea:focus {
+    border-color: #3b82f6;
+    outline: none;
+}
+
+/* Error Message Styles */
+.text-red-500 {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Button Styles */
+button[type="submit"] {
+    background-color: #3b82f6;
+    color: white;
+    font-size: 1rem;
+    padding: 1rem;
+    border-radius: 4px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #2563eb;
+}
+
+button[type="submit"]:focus {
+    outline: none;
+}
+
+/* Text Link Styles */
+a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #2563eb;
+}
+
+/* Responsive Image Styling */
+@media screen and (max-width: 1024px) {
+    .hidden.lg\:block {
+        display: none;
+    }
+}
+
+/* Responsive Form */
+@media screen and (max-width: 640px) {
+    form {
+        padding: 1rem;
+    }
+
+    .mb-8 h1 {
+        font-size: 1.5rem;
+    }
+
+    .space-y-4 > div {
+        margin-bottom: 1rem;
+    }
+}
