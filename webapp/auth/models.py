@@ -99,6 +99,27 @@ class User(db.Model):
 
         return user
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'specialty': self.specialty,
+            'activetion': self.activetion,
+            'bio': self.bio,
+            'image_filename': self.image_filename,
+            'roles': [role.name for role in self.roles]
+        }
+
+    def from_dict(self, data):
+        for field in ['username', 'email', 'specialty', 'bio', 'image_filename']:
+            if field in data:
+                setattr(self, field, data[field])
+        if 'password' in data:
+            self.set_password(data['password'])
+        if 'roles' in data:
+            self.roles = [Role.query.filter_by(name=role_name).first() for role_name in data['roles']]
+
 
 # the Role model
 class Role(db.Model):
@@ -111,3 +132,15 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role {}>'.format(self.name)
+
+    def to_dict(self):
+        return {
+                'id': self.id,
+                'name': self.name,
+                'description': self.description
+        }
+
+    def from_dict(self, data):
+        for field in ['name', 'description']:
+            if field in data:
+                setattr(self, field, data[field])
