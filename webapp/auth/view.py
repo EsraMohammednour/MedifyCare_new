@@ -16,8 +16,13 @@ auth_blueprint = Blueprint('auth', __name__)
 def register():
     data = request.form
 
+    # Check if username already exists
+    existing_user = User.query.filter_by(email=data.get('email')).first()
+    if existing_user:
+        return jsonify({"error": "Username already exists"}), 400
+
     new_user = User()
-    new_user.form_dict({
+    new_user.from_dict({
         'username': data.get('username'),
         'email': data.get('email'),
         'password': data.get('password'),
@@ -27,7 +32,8 @@ def register():
 
     role_id = data.get('role')
     selected_role = Role.query.get(role_id)
-    new_user.roles.append(selected_role)
+    if selected_role:
+        new_user.roles.append(selected_role)
 
     if 'image' in request.files:
         file = request.files['image']

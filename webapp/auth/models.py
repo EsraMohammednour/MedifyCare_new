@@ -14,24 +14,23 @@ roles = db.Table(
 # the User model
 class User(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
-    username = db.Column(db.String(255), nullable=False, index=True, unique=True)
-    password = db.Column(db.String(255))
+    username = db.Column(db.String(255), nullable=False, index=True, unique=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255))
     specialty = db.Column(db.String(255))
     activetion = db.Column(db.Boolean, default=False)
     bio = db.Column(Text)
     image_filename = db.Column(db.String(150))
-    sent_messages = db.relationship('Message', foreign_keys='Message.sender_id', backref='sender', lazy=True)
-    received_messages = db.relationship('Message', foreign_keys='Message.receiver_id', backref='receiver', lazy=True)
+    #sent_messages = db.relationship('Message', foreign_keys='Message.sender_id', backref='sender', lazy=True)
+    #received_messages = db.relationship('Message', foreign_keys='Message.receiver_id', backref='receiver', lazy=True)
     roles = db.relationship(
         'Role',
         secondary=roles,
         backref=db.backref('users', lazy='dynamic')
     )
 
-    def __init__(self, username, email, **kwargs):
-        self.username = username
-        self.email = email
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
