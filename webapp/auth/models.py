@@ -2,7 +2,7 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from flask import current_app
 from . import bcrypt, AnonymousUserMixin
 from .. import db
-from sqlalchemy import Text
+from sqlalchemy import Text, ForeignKey
 
 # the junction table for many-many relationship between (user, role)
 roles = db.Table(
