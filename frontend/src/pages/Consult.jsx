@@ -1,24 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import doctors from '../api/doctors.json';
 
 export default function Consult() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('All');
   const navigate = useNavigate();
-  const [doctors, setDoctors] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}`);
-        setDoctors(response.data.doctors);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, []);
 
   const filteredDoctors = doctors.filter((doctor) => {
     const matchesRole =
@@ -47,6 +34,7 @@ export default function Consult() {
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}>
               <option value="All">All Roles</option>
+              <option value="CEO">CEO</option>
               <option value="Doctor">Doctor</option>
               <option value="Specialist">Specialist</option>
             </select>
