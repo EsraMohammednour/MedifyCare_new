@@ -1,21 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import doctors from '../api/doctors.json';
+import axios from 'axios';
 
 export default function Consult() {
+  const [doctors, setDoctors] = useState([]);
+  const [specialties, setSpecialties] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRole, setSelectedRole] = useState('All');
+  const [selectedSpecialty, setSelectedSpecialty] = useState('All');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/');
+        setDoctors(response.data.doctors);
+        setSpecialties(['All', ...response.data.specialties]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const filteredDoctors = doctors.filter((doctor) => {
-    const matchesRole =
-      selectedRole === 'All' || doctor.role.toLowerCase().includes(selectedRole.toLowerCase());
-    const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesRole && matchesSearch;
+    const matchesSpecialty =
+      selectedSpecialty === 'All' || doctor.specialty.toLowerCase() === selectedSpecialty.toLowerCase();
+    const matchesSearch = doctor.username.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSpecialty && matchesSearch;
   });
 
-  const handleCardClick = (doctorId) => {
-    navigate(`/chat/${doctorId}`);
+  const handleCardClick = (doctorUsername) => {
+    navigate(`/chat/${doctorUsername}`);
   };
 
   return (
@@ -31,12 +47,13 @@ export default function Consult() {
           <div className="flex gap-4 justify-center mb-8">
             <select
               className="border rounded px-4 py-2"
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}>
-              <option value="All">All Roles</option>
-              <option value="CEO">CEO</option>
-              <option value="Doctor">Doctor</option>
-              <option value="Specialist">Specialist</option>
+              value={selectedSpecialty}
+              onChange={(e) => setSelectedSpecialty(e.target.value)}>
+              {specialties.map((specialty) => (
+                <option key={specialty} value={specialty}>
+                  {specialty}
+                </option>
+              ))}
             </select>
             <input
               type="text"
@@ -48,43 +65,36 @@ export default function Consult() {
           </div>
 
           <div
-            className="max-w-sm mx-auto sm:max-w-none grid gap-12 sm:grid-cols-2 md:grid-cols-3 sm:gap-x-6 sm:gap-y-8 items-start mb-12 md:mb-16 "
+            className="max-w-sm mx-auto sm:max-w-none grid gap-12 sm:grid-cols-2 md:grid-cols-3 sm:gap-x-6 sm:gap-y-8 items-start mb-12 md:mb-16"
             data-aos-id-testimonials>
-            {filteredDoctors.map((doctor) => (
+            {filteredDoctors.map((doctor, index) => (
               <article
-                key={doctor.id}
+                key={index}
                 className="h-full flex flex-col bg-white p-6 shadow-xl cursor-pointer"
                 data-aos="fade-up"
                 data-aos-anchor="[data-aos-id-testimonials]"
-                data-aos-delay={doctor.delay}
-                onClick={() => handleCardClick(doctor.id)}>
+                onClick={() => handleCardClick(doctor.username)}>
                 <header>
                   <div className="flex items-center mb-4">
                     <div className="relative mr-5">
                       <img
                         className="rounded-full shrink-0"
-                        // src={doctor.image}
-                        src='../assets/images/img.jpg'
+                        src={doctor.image_filename || '../assets/images/img.jpg'}
                         width={48}
                         height={48}
-                        alt={doctor.name}
+                        alt={doctor.username}
                       />
                     </div>
-                    <p>{doctor.name}</p>
+                    <p>{doctor.username}</p>
                   </div>
                 </header>
                 <div className="grow mb-3">
-                  <p className="text-slate-500 italic">{doctor.quote}</p>
+                  <p className="text-slate-500 italic">{doctor.bio}</p>
                 </div>
                 <footer className="text-sm font-medium">
-                  <a
-                    className="text-slate-800 hover:text-blue-600 transition duration-150 ease-in-out"
-                    href="#0"
-                  >
-                    {doctor.name}
-                  </a>
+                  <span className="text-slate-800">{doctor.username}</span>
                   <span className="text-slate-300"> · </span>
-                  <span className="text-slate-500">{doctor.role}</span>
+                  <span className="text-slate-500 capitalize">{doctor.specialty}</span>
                 </footer>
               </article>
             ))}
