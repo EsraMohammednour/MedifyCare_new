@@ -19,6 +19,7 @@ export default function SignIn() {
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, values);
             console.log('Server Response:', response.data);
+            localStorage.setItem('isLoggedIn', true);
             navigate('/');
         } catch (error) {
             console.error('Error submitting form:', error);
