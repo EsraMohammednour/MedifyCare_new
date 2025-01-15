@@ -20,7 +20,7 @@ chat_blueprint = Blueprint(
 
 
 @chat_blueprint.route('/doctors', methods=['GET', 'POST'])
-@login_required
+
 def my_doctor():
     doctors = db.session.query(
         User.id,
@@ -88,20 +88,17 @@ def my_patients():
 @chat_blueprint.route('/patient/<username>', methods=['GET'])
 @login_required
 def view_patient_messages(username):
-    # Ensure the current user is a doctor
-    # if not current_user.is_doctor:
-    #     return redirect(url_for('home'))
-
-    # Fetch the patient
     patient = User.query.filter_by(username=username).first_or_404()
 
-    # Fetch the messages between the doctor and the patient
     messages = Message.query.filter(
         ((Message.sender_id == patient.id) & (Message.receiver_id == current_user.id)) |
         ((Message.sender_id == current_user.id) & (Message.receiver_id == patient.id))
     ).order_by(Message.timestamp.asc()).all()
 
-    return render_template('doctor_chat.html', patient=patient, messages=messages)
+    return jsonify({
+        'patient': {'username': patient.username, 'bio': patient.bio},
+        'messages': [{'sender': msg.sender.username, 'content': msg.content} for msg in messages]
+    }), 200
 
 
 @socketio.on('connect')
@@ -126,25 +123,17 @@ def handle_send_message(data):
     room = data['room']
     doctor_username, patient_username = room.split('_')
 
-    # Determine the receiver based on who is sending the message
     if current_user.username == doctor_username:
-        # If the current user is the doctor, the receiver is the patient
         receiver = User.query.filter_by(username=patient_username).first()
     else:
-        # Otherwise, the current user is the patient, and the receiver is the doctor
         receiver = User.query.filter_by(username=doctor_username).first()
 
     if receiver:
-        # Save the message using the save_message function
         message = save_message(receiver_id=receiver.id, content=data['message'])
 
-        print(f"Emitting message to room {room}: {message.content}")
-
-        # Emit the message to the room with additional details
         socketio.emit('receive_message', {
             'message': message.content,
-            'sender': current_user.username  # Include sender's username
+            'sender': current_user.username
         }, room=room)
     else:
-        # Handle case where the receiver is not found
         emit('error', {'msg': 'Receiver not found'}, room=room)
