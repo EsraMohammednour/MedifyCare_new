@@ -14,7 +14,7 @@ export default function ResetPasword() {
     });
     const onSubmit = async (values, { setSubmitting, resetForm }) => {
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/reset_password/<token>/<int:user_id>`, values);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/reset_password`, values);
             console.log('Server Response:', response.data);
             alert('Reset password email sent successfully!');
         } catch (error) {

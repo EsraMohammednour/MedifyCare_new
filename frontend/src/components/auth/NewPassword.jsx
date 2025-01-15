@@ -14,7 +14,7 @@ const validationSchema = Yup.object({
 });
 const onSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/reset-password`, values);
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/reset_password/<token>/<int:user_id>`, values);
         console.log('Response:', response);
         alert('Password reset successful');
     } catch (error) {
@@ -43,31 +43,31 @@ export default function NewPassword() {
                                         initialValues={initialValues}
                                         validationSchema={validationSchema}
                                         onSubmit={onSubmit}>
-                                            {({ isSubmitting }) => (
-                                        <Form>
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <div className="flex justify-between">
-                                                        <label className="block text-sm text-gray-600 font-medium mb-1" htmlFor="password">Password <span className="text-red-500">*</span></label>
+                                        {({ isSubmitting }) => (
+                                            <Form>
+                                                <div className="space-y-4">
+                                                    <div>
+                                                        <div className="flex justify-between">
+                                                            <label className="block text-sm text-gray-600 font-medium mb-1" htmlFor="password">Password <span className="text-red-500">*</span></label>
+                                                        </div>
+                                                        <Field id="password" name='password' className="form-input py-2 w-full" type="password" autoComplete="on" required />
+                                                        <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
                                                     </div>
-                                                    <Field id="password" name='password' className="form-input py-2 w-full" type="password" autoComplete="on" required />
-                                                    <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
-                                                </div>
-                                                <div>
-                                                    <div className="flex justify-between">
-                                                        <label className="block text-sm text-gray-600 font-medium mb-1" htmlFor="password2">Confirm Password <span className="text-red-500">*</span></label>
+                                                    <div>
+                                                        <div className="flex justify-between">
+                                                            <label className="block text-sm text-gray-600 font-medium mb-1" htmlFor="password2">Confirm Password <span className="text-red-500">*</span></label>
+                                                        </div>
+                                                        <Field id="password2" name='password2' className="form-input py-2 w-full" type="password" autoComplete="on" required />
+                                                        <ErrorMessage name="password2" component="div" className="text-red-500 text-sm" />
                                                     </div>
-                                                    <Field id="password2" name='password2' className="form-input py-2 w-full" type="password" autoComplete="on" required />
-                                                    <ErrorMessage name="password2" component="div" className="text-red-500 text-sm" />
                                                 </div>
-                                            </div>
-                                            <div className="mt-6">
-                                                <button type='submit' className="btn-sm text-white bg-gradient-to-t from-primary to-primaryLight hover:to-primaryDark w-full shadow-lg group">
-                                                    Reset Password <span className="tracking-normal text-blue-200 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">-&gt;</span>
-                                                </button>
-                                            </div>
-                                        </Form>
-                                            )}
+                                                <div className="mt-6">
+                                                    <button type='submit' className="btn-sm text-white bg-gradient-to-t from-primary to-primaryLight hover:to-primaryDark w-full shadow-lg group">
+                                                        Reset Password <span className="tracking-normal text-blue-200 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">-&gt;</span>
+                                                    </button>
+                                                </div>
+                                            </Form>
+                                        )}
                                     </Formik>
                                 </div>
                             </div>
