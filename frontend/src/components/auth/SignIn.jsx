@@ -1,32 +1,33 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
 import SocialLogin from './SocialLogin';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 
-const initialValues = {
-    email: '',
-    password: '',
-}
-const validationSchema = Yup.object({
-    email: Yup.string().required('Email is required to login'),
-    password: Yup.string().required('Password is required to login'),
-})
-const onSubmit = async (values, { setSubmitting, resetForm }) => {
-    try {
-        const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, values);
-        console.log('Server Response:', response.data);
-        alert('Form submitted successfully!');
-    } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('Error submitting form');
-    } finally {
-        setSubmitting(false);
-        resetForm();
-    }
-};
 
 export default function SignIn() {
+    const navigate = useNavigate();
+    const initialValues = {
+        email: '',
+        password: '',
+    }
+    const validationSchema = Yup.object({
+        email: Yup.string().required('Email is required to login'),
+        password: Yup.string().required('Password is required to login'),
+    })
+    const onSubmit = async (values, { setSubmitting, resetForm }) => {
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, values);
+            console.log('Server Response:', response.data);
+            navigate('/');
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        } finally {
+            setSubmitting(false);
+            resetForm();
+        }
+    };
+
     return (
         <>
             <main className="relative grow flex">

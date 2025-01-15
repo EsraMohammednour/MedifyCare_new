@@ -38,6 +38,8 @@ function App() {
             <Route path='/consult' element={<Consult />} />
             <Route path="/chat/:id" element={<ChatPage />} />
             <Route path='about' element={<About />} />
+            {/* 404 */}
+            <Route path="*" element={<h1>Page Not Found</h1>} />
           </Routes>
           <Footer />
         </Router>

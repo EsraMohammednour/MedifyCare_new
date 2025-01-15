@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom';
 import SocialLogin from './SocialLogin';
 // import { Scrollbars } from 'react-custom-scrollbars';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 
 export default function SignUp() {
+    const navigate = useNavigate();
     const [role, setRole] = useState('patient');
 
     const initialValues = {
@@ -14,7 +15,6 @@ export default function SignUp() {
         email: '',
         password: '',
         confirm: '',
-        role: 'patient',
         speciality: '',
         bio: '',
         image: null,
@@ -26,35 +26,20 @@ export default function SignUp() {
         confirm: Yup.string()
             .oneOf([Yup.ref('password'), null], 'Passwords must match')
             .required('Confirm your password'),
-        role: Yup.string().required('Select a role'),
-        speciality: Yup.string().when('role', {
-            is: (value) => value === 'doctor',
-            then: (schema) => schema.required('Enter your speciality'),
-            otherwise: (schema) => schema,
-        }),
-        bio: Yup.string().when('role', {
-            is: (value) => value === 'doctor',
-            then: (schema) => schema.required('Enter your Bio'),
-            otherwise: (schema) => schema,
-        }),
-        image: Yup.mixed().when('role', {
-            is: (value) => value === 'doctor',
-            then: (schema) => schema.required('Enter your Image'),
-            otherwise: (schema) => schema,
-        }),
     });
 
     const onSubmit = async (values, { setSubmitting, resetForm }) => {
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/register`, values);
             console.log(response);
+            navigate('/signin');
         } catch (error) {
             console.error('Error submitting form:', error);
-            alert('Error submitting form');
         } finally {
             setSubmitting(false);
             resetForm();
         }
+        console.log('Form Values:', values);
     }
     return (
         <>
@@ -99,7 +84,6 @@ export default function SignUp() {
                                                     <div>
                                                         <label className="block text-sm text-gray-600 font-medium mb-1" htmlFor="role">Role <span className="text-red-500">*</span></label>
                                                         <Field
-                                                            required
                                                             as="select"
                                                             name="role"
                                                             id="role"
@@ -108,24 +92,23 @@ export default function SignUp() {
                                                                 const selectedRole = e.target.value;
                                                                 setRole(selectedRole);
                                                                 setFieldValue('role', selectedRole);
-                                                            }}
-                                                        >
+                                                            }}>
                                                             <option value="patient">Patient</option>
                                                             <option value="doctor">Doctor</option>
                                                         </Field>
-                                                        <ErrorMessage name="role" component="div" className="text-red-500 text-sm" />
+                                                        {/* <ErrorMessage name="role" component="div" className="text-red-500 text-sm" /> */}
                                                     </div>
                                                     {role === 'doctor' && (
                                                         <>
                                                             <div>
                                                                 <label className="block text-sm text-gray-600 font-medium mb-1" htmlFor="speciality">Speciality</label>
-                                                                <Field id="speciality" name="speciality" className="form-input py-2 w-full" type="text" required />
-                                                                <ErrorMessage name="speciality" component="div" className="text-red-500" />
+                                                                <Field id="speciality" name="speciality" className="form-input py-2 w-full" type="text" />
+                                                                {/* <ErrorMessage name="speciality" component="div" className="text-red-500" /> */}
                                                             </div>
                                                             <div>
                                                                 <label className="block text-sm text-gray-600 font-medium mb-1" htmlFor="bio">Bio</label>
-                                                                <Field as="textarea" id="bio" name="bio" className="form-textarea py-2 w-full" rows="4" required />
-                                                                <ErrorMessage name="bio" component="div" className="text-red-500" />
+                                                                <Field as="textarea" id="bio" name="bio" className="form-textarea py-2 w-full" rows="4" />
+                                                                {/* <ErrorMessage name="bio" component="div" className="text-red-500" /> */}
                                                             </div>
                                                             <div>
                                                                 <label className="block text-sm text-gray-600 font-medium mb-1" htmlFor="image">Upload Image</label>
